@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Распознавание&nbsp;музыкальных&nbsp;файлов&nbsp;</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet"
+          href="https://storage.googleapis.com/code.getmdl.io/1.0.5/material.deep_purple-indigo.min.css">
+    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.5/material.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+
+    <link rel="stylesheet" href="css/jquery.fileupload.css">
+
+    <script src="http://codebase.es/riffwave/riffwave.js"></script>
+    <script>
+        setInterval(function () {
+            var lenta = document.title;
+            document.title = lenta.substr(1, lenta.length) + lenta.charAt(0);
+        }, 100);
+    </script>
+</head>
+<body>
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">Распознавание музыкальных файлов</span>
+        </div>
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+            <a href="#scroll-tab-1" class="mdl-layout__tab is-active">Этап 1</a>
+            <a href="#scroll-tab-2" class="mdl-layout__tab">Этап 2</a>
+            <a href="#scroll-tab-3" class="mdl-layout__tab">Этап 3-4</a>
+            <a href="#scroll-tab-5" class="mdl-layout__tab">Этап 5</a>
+        </div>
+    </header>
+
+    <main class="mdl-layout__content">
+        <!-- *************************************** Этапы работы *************************************** -->
+
+        <!-- *************************************** 1ый этап *************************************** -->
+        <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">
+            <div class="page-content mdl-grid">
+                <style>
+                    .demo-card-wide.mdl-card {
+                        margin: 0 auto;
+                        width: 512px;
+                    }
+
+                    .demo-card-wide > .mdl-card__menu {
+                        color: #fff;
+                    }
+                </style>
+
+                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                    <div class="mdl-card__title mdl-card--expand">
+                        <h4>Парсинг wav-файлов</h4>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        <span class="mdl-typography--font-light mdl-typography--subhead">Добавить файл
+                           <span class="fileinput-button" style="height: 58px">
+                               <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                                   <i class="material-icons">add_circle</i>
+                               </button>
+                                <input id="fileupload" type="file" name="upl" multiple>
+                            </span></span>
+                        <br>
+                        <br>
+
+                        <div id="files" class="files"><span class="mdl-typography--font-light mdl-typography--subhead">Загруженный успешно файл: </span>
+                        </div>
+                        <br>
+                        <span class="mdl-typography--font-light mdl-typography--subhead">Амплитуда файла: (Проигрывание из массива амплитуд)</span>
+                        <style>
+                            #canvas {
+                                margin: 0 auto;
+                                display: block;
+                                background-color: #ffffff;
+                            }
+
+                            #controls {
+                                text-align: center;
+                            }
+
+                            #start_button, #stop_button {
+                                font-size: 16pt;
+                            }
+                        </style>
+                        <canvas id="canvas" width="500" height="200"></canvas>
+                        <p id="controls">
+                            <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+                                    id="start_button">
+                                <i class="material-icons">play_circle_filled</i>
+                            </button>
+                            <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+                                    id="stop_button">
+                                <i class="material-icons">pause_circle_filled</i>
+                            </button>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- *************************************** 2ой этап *************************************** -->
+        <section class="mdl-layout__tab-panel" id="scroll-tab-2">
+            <div class="page-content mdl-grid">
+                <style>
+                    .demo-card-wide.mdl-card {
+                        margin: 0 auto;
+                        width: 512px;
+                    }
+
+                    .demo-card-wide > .mdl-card__menu {
+                        color: #fff;
+                    }
+                </style>
+
+                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                    <div class="mdl-card__title mdl-card--expand">
+                        <h4>Cравнение wav-файлов по выбранным амплитудам и
+                            выравнивание громкости</h4>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        <span class="mdl-typography--font-light mdl-typography--subhead">Коэффициент усиления для нормализации амплитуды:</span>
+                        <br>
+                        <br>
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
+                            <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" value="yes"/>
+                            <span class="mdl-checkbox__label">≥ 1  - нормализует умножением на коэффициент</span>
+                        </label>
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-2">
+                            <input type="checkbox" id="checkbox-2" class="mdl-checkbox__input" value="yes"/>
+                            <span class="mdl-checkbox__label">= 1  - не нормализует</span>
+                        </label>
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-3">
+                            <input type="checkbox" id="checkbox-3" class="mdl-checkbox__input" value="yes"/>
+                            <span class="mdl-checkbox__label"> ≤ -1 - нормализует делением на модуль коэффициента</span>
+                        </label>
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-4">
+                            <input type="checkbox" id="checkbox-4" class="mdl-checkbox__input" value="yes"/>
+                            <span class="mdl-checkbox__label"> [0,1) - нормализует сжимая логарифмически</span>
+                        </label>
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-5">
+                            <input type="checkbox" id="checkbox-5" class="mdl-checkbox__input" value="yes"/>
+                            <span class="mdl-checkbox__label"> (-1, 0) - нормализует линейно</span>
+                        </label>
+                        <span class="mdl-typography--font-light mdl-typography--subhead">Добавить файл
+                           <span class="fileinput-button" style="height: 58px">
+                               <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                                   <i class="material-icons">add_circle</i>
+                               </button>
+                                <input id="fileupload2" type="file" name="upl" multiple>
+                            </span></span>
+                        <br>
+                        <br>
+
+                        <div id="files2" class="files"><span class="mdl-typography--font-light mdl-typography--subhead">Загруженный успешно файл: </span>
+                        </div>
+                        <br>
+                        <span class="mdl-typography--font-light mdl-typography--subhead">Амплитуда файла: (Проигрывание из массива амплитуд)</span>
+                        <style>
+                            #canvas2 {
+                                margin: 0 auto;
+                                margin-bottom: 55px;
+                                display: block;
+                                background-color: #ffffff;
+                            }
+
+                            #controls2 {
+                                text-align: center;
+                            }
+
+                            #start_button2, #stop_button2 {
+                                font-size: 16pt;
+                            }
+                        </style>
+                        <canvas id="canvas2" width="500" height="200"></canvas>
+                        <p id="controls2">
+                            <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+                                    id="start_button2">
+                                <i class="material-icons">play_circle_filled</i>
+                            </button>
+                            <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+                                    id="stop_button2">
+                                <i class="material-icons">pause_circle_filled</i>
+                            </button>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- *************************************** 3-4ий этап ************************************* -->
+        <section class="mdl-layout__tab-panel" id="scroll-tab-3">
+            <div class="page-content mdl-grid">
+                <style>
+                    .demo-card-wide.mdl-card {
+                        margin: 0 auto;
+                        width: 512px;
+                    }
+
+                    .demo-card-wide > .mdl-card__menu {
+                        color: #fff;
+                    }
+                </style>
+
+                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                    <div class="mdl-card__title mdl-card--expand">
+                        <h4>Использование динамического программирования для сравнения частей файлов</h4>
+                    </div>
+                    <div class="mdl-card__title mdl-card--expand">
+                        <h4>Преобразование фурье для перехода к энергиям частот, использование динамического
+                            программирования для сравнения векторов энергий частот</h4>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        <span class="mdl-typography--font-light mdl-typography--subhead">Создать новый класс:
+                           <span class="fileinput-button" style="height: 58px">
+                               <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                                   <i class="material-icons">add_circle</i>
+                               </button>
+                                <input id="fileupload3" type="file" name="upl" multiple>
+                            </span></span>
+                        <br>
+                        <br>
+
+                        <div id="files3" class="files"><span class="mdl-typography--font-light mdl-typography--subhead">Построение вектора  MFCC... </span>
+
+                            <div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"
+                                 hidden="hidden"></div>
+                        </div>
+                        <br>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- *************************************** 5ый этап *************************************** -->
+        <section class="mdl-layout__tab-panel" id="scroll-tab-5">
+            <div class="page-content">
+                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                    <div class="mdl-card__title mdl-card--expand">
+                        <h4>Подсчет MFCC-коэффициентов и окончательное сравнение векторов</h4>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        <span class="mdl-typography--font-light mdl-typography--subhead">Проверить принадлежность к классу:
+                           <span class="fileinput-button" style="height: 58px">
+                               <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                                   <i class="material-icons">add_circle</i>
+                               </button>
+                                <input id="fileupload4" type="file" name="upl" multiple>
+                            </span></span>
+                        <br>
+                        <br>
+
+                        <div id="files4" class="files"><span class="mdl-typography--font-light mdl-typography--subhead">Итог... </span>
+
+                            <div id="p2_" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"
+                                 hidden="hidden"></div>
+                        </div>
+                        <br>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/vendor/jquery.ui.widget.js"></script>
+<script src="js/jquery.iframe-transport.js"></script>
+<script src="js/jquery.fileupload.js"></script>
+
+
+<!-- *************************************** Логика 1ый этап *************************************** -->
+<script>
+    window.requestAnimFrame = (function () {
+        return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                function (callback, element) {
+                    window.setTimeout(callback, 1000 / 60);
+                };
+    })();
+
+    var column = 0;
+    var canvasWidth = 800;
+    var canvasHeight = 200;
+    var ctx;
+    var amplitudeArray;
+    var amplitudeArray_;
+
+    $(function () {
+        'use strict';
+
+        ctx = $("#canvas").get()[0].getContext("2d");
+        column = 0;
+        clearCanvas();
+
+
+        $('#fileupload').fileupload({
+            url: 'php/phase1.php',
+            dataType: 'json',
+            done: function (e, data) {
+                $.each(data.result.files, function (index, file) {
+                    $('<p/>').text(file.name).appendTo('#files');
+                });
+                amplitudeArray = data.result.data;
+                for (var i = 0; i <= amplitudeArray.length; i += 80) {
+                    amplitudeArray_ = amplitudeArray.slice(i, i + 80);
+                    drawTimeDomain();
+                }
+
+                var data = amplitudeArray; // just an array
+                var wave = new RIFFWAVE(data); // create the wave file
+                var audio = new Audio(wave.dataURI); // create the HTML5 audio element
+
+
+                wave.Make(data); // make the wave file
+                audio.src = wave.dataURI; // set audio source
+
+                $('#start_button').on('click', function () {
+
+                    audio.loop = true;
+                    audio.play(); // some noise
+                });
+                $('#stop_button').on('click', function () {
+                    audio.loop = false;
+                    audio.play(); // some noise
+                });
+            },
+            progressall: function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                /*$('#zxc').addEventListener('mdl-componentupgraded', function () {
+                 this.MaterialProgress.setProgress(progress);
+                 });*/
+            }
+        }).prop('disabled', !$.support.fileInput)
+                .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+
+    });
+
+    function drawTimeDomain() {
+        var minValue = 9999999;
+        var maxValue = 0;
+        for (var i = 0; i < amplitudeArray_.length; i++) {
+            var value = amplitudeArray_[i] / 256;
+            if (value > maxValue) {
+                maxValue = value;
+            } else if (value < minValue) {
+                minValue = value;
+            }
+        }
+        var y_lo = canvasHeight - (canvasHeight * minValue) - 1;
+        var y_hi = canvasHeight - (canvasHeight * maxValue) - 1;
+        ctx.fillStyle = '#673ab7';
+        ctx.fillRect(column, y_lo, 1, y_hi - y_lo);
+
+        column += 1;
+        if (column >= canvasWidth) {
+            column = 0;
+            clearCanvas();
+        }
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    }
+</script>
+
+<!-- *************************************** Логика 2ой этап *************************************** -->
+<script>
+    var chkVal;
+
+    $('input[id="checkbox-1"]').change(function () {
+        if ($(this).is(':checked')) {
+            chkVal = 2;
+            $.ajax({
+                url: 'php/phase2.php',
+                type: 'post',
+                data: {val: chkVal}
+            });
+        }
+
+    });
+
+    $('input[id="checkbox-2"]').change(function () {
+        if ($(this).is(':checked')) {
+            chkVal = 1;
+            $.ajax({
+                url: 'php/phase2.php',
+                type: 'post',
+                data: {val: chkVal}
+            });
+        }
+
+    });
+
+    $('input[id="checkbox-3"]').change(function () {
+        if ($(this).is(':checked')) {
+            chkVal = -2;
+            $.ajax({
+                url: 'php/phase2.php',
+                type: 'post',
+                data: {val: chkVal}
+            });
+        }
+
+    });
+
+    $('input[id="checkbox-4"]').change(function () {
+        if ($(this).is(':checked')) {
+            chkVal = 0.5;
+            $.ajax({
+                url: 'php/phase2.php',
+                type: 'post',
+                data: {val: chkVal}
+            });
+        }
+
+    });
+
+    $('input[id="checkbox-5"]').change(function () {
+        if ($(this).is(':checked')) {
+            chkVal = -0.5;
+            $.ajax({
+                url: 'php/phase2.php',
+                type: 'post',
+                data: {val: chkVal}
+            });
+        }
+
+    });
+
+    $(function () {
+        'use strict';
+        $('#fileupload2').fileupload({
+            url: 'php/phase2.php',
+            dataType: 'json',
+            done: function (e, data) {
+                ctx = $("#canvas2").get()[0].getContext("2d");
+                column = 0;
+                clearCanvas();
+                $.each(data.result.files, function (index, file) {
+                    $('<p/>').text(file.name).appendTo('#files2');
+                });
+                amplitudeArray = data.result.data;
+                for (var i = 0; i <= amplitudeArray.length; i += 80) {
+                    amplitudeArray_ = amplitudeArray.slice(i, i + 80);
+                    drawTimeDomain();
+                }
+
+                var data = amplitudeArray; // just an array
+                var wave = new RIFFWAVE(data); // create the wave file
+                var audio = new Audio(wave.dataURI); // create the HTML5 audio element
+
+                $('#start_button2').on('click', function () {
+
+                    audio.loop = true;
+                    audio.play(); // some noise
+                });
+                $('#stop_button2').on('click', function () {
+                    audio.loop = false;
+                    audio.play(); // some noise
+                });
+            },
+            progressall: function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                /*$('#zxc').addEventListener('mdl-componentupgraded', function () {
+                 this.MaterialProgress.setProgress(progress);
+                 });*/
+            }
+        }).prop('disabled', !$.support.fileInput)
+                .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+
+    });
+</script>
+
+<!-- *************************************** Логика 3-4ий этап ************************************* -->
+<script>
+    $(function () {
+        'use strict';
+
+        $('#fileupload3').fileupload({
+            url: 'php/phase3.php',
+            dataType: 'json',
+            done: function (e, data) {
+                $('#p2').toggle(function () {
+                    if ($(this).css('display') === 'none') {
+                        $(this).prop('hidden', 'hidden');
+                    }
+                });
+                $.each(data.result.files, function (index, file) {
+                    $('<p/>').text(file.name).appendTo('#files3');
+                });
+
+            },
+            progressall: function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                /*$('#zxc').addEventListener('mdl-componentupgraded', function () {
+                 this.MaterialProgress.setProgress(progress);
+                 });*/
+                $('#p2').toggle(function () {
+                    if ($(this).css('display') === 'none') {
+                        $(this).removeProp('hidden');
+                    }
+                });
+            }
+
+        }).prop('disabled', !$.support.fileInput)
+                .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+
+    });
+</script>
+<!-- *************************************** Логика 5ый этап *************************************** -->
+<script>
+    $(function () {
+        'use strict';
+
+        $('#fileupload4').fileupload({
+            url: 'php/phase5.php',
+            dataType: 'json',
+            done: function (e, data) {
+                $('#p2_').toggle(function () {
+                    if ($(this).css('display') === 'none') {
+                        $(this).prop('hidden', 'hidden');
+                    }
+                });
+                $.each(data.result.files, function (index, file) {
+                    $('<p/>').text(file.name).appendTo('#files4');
+                });
+
+            },
+            progressall: function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                /*$('#zxc').addEventListener('mdl-componentupgraded', function () {
+                 this.MaterialProgress.setProgress(progress);
+                 });*/
+                $('#p2_').toggle(function () {
+                    if ($(this).css('display') === 'none') {
+                        $(this).removeProp('hidden');
+                    }
+                });
+            }
+
+        }).prop('disabled', !$.support.fileInput)
+                .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+
+    });
+</script>
+
+
+</body>
+</html>
