@@ -1,5 +1,5 @@
 ### Этап 1
-![ScreenShot](http://i.imgur.com/0KSIVMl.png)
+![ScreenShot](http://i.imgur.com/oDSBujZ.png)
 ### Этап 2 
 ![ScreenShot](http://i.imgur.com/oRgzNdb.png)
 ### Этап 3-4
