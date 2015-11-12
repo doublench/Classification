@@ -5,4 +5,4 @@
 ### Этап 3-4
 ![ScreenShot](http://i.imgur.com/TxyU4zl.png)
 ### Этап 5
-![ScreenShot](http://i.imgur.com/FakqM9w.png)
+![ScreenShot](http://i.imgur.com/788Q4xU.png)
