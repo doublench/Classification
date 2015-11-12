@@ -1,0 +1,23 @@
+--
+-- Database: `classification`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `samples`
+--
+
+CREATE TABLE `samples` (
+  `id` int(11) NOT NULL,
+  `name` varchar(256) NOT NULL,
+  `vector` longtext NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `value`
+--
+
+CREATE TABLE `value` (
+  `value` int(11) NOT NULL
+) ENGINE=MyIS
